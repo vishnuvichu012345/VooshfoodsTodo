@@ -1,0 +1,32 @@
+/* Header styles */
+.header {
+    background-color: #3b82f6;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-buttons {
+    display: flex;
+  }
+  
+  .header-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .login-button {
+    background-color: #3b82f6;
+    color: white;
+    border: 1px solid white;
+  }
+  
+  .signup-button {
+    background-color: white;
+    color: #3b82f6;
+  }
+  

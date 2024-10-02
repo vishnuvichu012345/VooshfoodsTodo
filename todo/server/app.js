@@ -3,6 +3,7 @@ const express = require('express');
 const { connectDB } = require('./db');
 const { User } = require('./models');
 const authRoutes = require('./routes/auth');
+const taskRoutes = require('./routes/tasks');
 require('dotenv').config();
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes);
 
 
 const PORT = process.env.PORT || 5000;

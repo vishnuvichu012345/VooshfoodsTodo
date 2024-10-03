@@ -70,39 +70,40 @@ router.post('/login', [
   }
 });
 
-
 router.post('/google-login', async (req, res) => {
-  const { token } = req.body; // Expecting token from the client
+  const { token } = req.body; // Only receiving the token from the frontend
 
   try {
-      // Verify the Google token
-      const ticket = await client.verifyIdToken({
-          idToken: token,
-          audience: process.env.GOOGLE_CLIENT_ID, // Your Google Client ID
+    // Verify the Google token with Google API
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID, // Your Google Client ID
+    });
+
+    // Extract user details from the verified token
+    const payload = ticket.getPayload();
+    const { email, name } = payload;
+
+    // Check if user already exists in the database
+    let user = await User.findOne({ where: { email } });
+    if (!user) {
+      // If user doesn't exist, create a new one
+      user = await User.create({
+        name,
+        email,
+        password: 'google-auth', // Set default or placeholder password
       });
-      const payload = ticket.getPayload();
-      const { email, name } = payload;
+    }
 
-      // Check if the user already exists
-      let user = await User.findOne({ where: { email } });
-      if (!user) {
-          // If user doesn't exist, create a new one
-          const newUser = await User.create({
-              name,
-              email,
-              password: 'google-auth', // You can set a default password or leave this out
-          });
-          user = newUser; // Assign the newly created user
-      }
+    // Generate a JWT token for the user
+    const jwtPayload = { userId: user.id };
+    const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-      // Generate a JWT token
-      const jwtPayload = { userId: user.id };
-      const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-      res.json({ token: jwtToken, user }); // Send back the token and user info
+    // Send the JWT token and user info back to the frontend
+    res.json({ token: jwtToken, user });
   } catch (error) {
-      console.error(error);
-      res.status(401).json({ msg: 'Google login failed' });
+    console.error(error);
+    res.status(401).json({ msg: 'Google login failed' });
   }
 });
 

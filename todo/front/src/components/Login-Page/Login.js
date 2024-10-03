@@ -4,7 +4,7 @@ import './Login-Page.css';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
-import { loginUser } from '../../services/authService';
+import { loginUser, loginUserWithGoogle } from '../../services/authService'; // Import your service functions
 import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin
 
 const LoginPage = () => {
@@ -39,7 +39,7 @@ const LoginPage = () => {
 
     // Send the credential to your backend for verification
     try {
-      const data = await loginUserWithGoogle(credential); // You need to create this function in your authService
+      const data = await loginUserWithGoogle(credential); // Use the imported function
       console.log(data); // Log the response to check if it contains the token
       const { token } = data; // Extract the token
 
@@ -86,33 +86,32 @@ const LoginPage = () => {
           <p className="paragraph">
             Don't have an account? <a href="/signup" className="link">Signup</a>
           </p>
-          <GoogleLogin
+        </form>
+        
+        <GoogleLogin
           onSuccess={handleGoogleLogin} // Handle success
           onError={handleGoogleError} // Handle error
         />
-        </form>
-        
-        
       </div>
       <ToastContainer /> {/* This will render the toast notifications */}
     </>
   );
 };
 
-// You will need to create a function in authService to handle the Google login
-const loginUserWithGoogle = async (token) => {
-  // Replace with your API call to verify the token and get user info
-  const response = await fetch('/api/auth/google-login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ token }),
-  });
-  if (!response.ok) {
-    throw new Error('Google login failed');
-  }
-  return await response.json();
-};
+// Move this function to authService.js
+// It’s better to handle API calls in the service file
+// export const loginUserWithGoogle = async (token) => {
+//   const response = await fetch('/api/auth/google-login', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({ token }),
+//   });
+//   if (!response.ok) {
+//     throw new Error('Google login failed');
+//   }
+//   return await response.json();
+// };
 
 export default LoginPage;

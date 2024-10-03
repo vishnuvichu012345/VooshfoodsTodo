@@ -37,7 +37,7 @@ export const loginUser = async (email, password) => {
 };
 
 
-export const googleLogin = async (token) => {
+export const loginUserWithGoogle = async (token) => {
   try {
     const response = await axios.post(`${API_URL}/auth/google-login`, {
       token,

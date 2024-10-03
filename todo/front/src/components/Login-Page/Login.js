@@ -86,12 +86,13 @@ const LoginPage = () => {
           <p className="paragraph">
             Don't have an account? <a href="/signup" className="link">Signup</a>
           </p>
-        </form>
-        
-        <GoogleLogin
+          <GoogleLogin
           onSuccess={handleGoogleLogin} // Handle success
           onError={handleGoogleError} // Handle error
         />
+        </form>
+        
+        
       </div>
       <ToastContainer /> {/* This will render the toast notifications */}
     </>

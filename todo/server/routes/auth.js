@@ -70,4 +70,40 @@ router.post('/login', [
   }
 });
 
+
+router.post('/google-login', async (req, res) => {
+  const { token } = req.body; // Expecting token from the client
+
+  try {
+      // Verify the Google token
+      const ticket = await client.verifyIdToken({
+          idToken: token,
+          audience: process.env.GOOGLE_CLIENT_ID, // Your Google Client ID
+      });
+      const payload = ticket.getPayload();
+      const { email, name } = payload;
+
+      // Check if the user already exists
+      let user = await User.findOne({ where: { email } });
+      if (!user) {
+          // If user doesn't exist, create a new one
+          const newUser = await User.create({
+              name,
+              email,
+              password: 'google-auth', // You can set a default password or leave this out
+          });
+          user = newUser; // Assign the newly created user
+      }
+
+      // Generate a JWT token
+      const jwtPayload = { userId: user.id };
+      const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+      res.json({ token: jwtToken, user }); // Send back the token and user info
+  } catch (error) {
+      console.error(error);
+      res.status(401).json({ msg: 'Google login failed' });
+  }
+});
+
 module.exports = router;

@@ -35,3 +35,19 @@ export const loginUser = async (email, password) => {
     throw error.response.data; // Handle errors (like invalid credentials)
   }
 };
+
+
+export const googleLogin = async (token) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/google-login`, {
+      token,
+    });
+    return response.data; // The token or any response you send from the backend
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data; // Handle specific errors from backend
+    } else {
+      throw { msg: 'Server error, please try again later' }; // Default fallback error
+    }
+  }
+};

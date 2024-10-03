@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Set the base URL for your API (e.g., localhost or your deployed server)
-const API_URL = 'http://localhost:5000/api/tasks'; // Change to your actual backend URL
+const API_URL = 'https://vooshfoodstodo-1.onrender.com'; // Change to your actual backend URL
 
 // Function to create an axios instance with authorization headers
 const getAxiosInstance = () => {

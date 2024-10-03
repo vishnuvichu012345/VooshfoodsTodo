@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Set the base URL for your API (e.g., localhost or your deployed server)
-const API_URL = 'http://localhost:5000/api'; // Change to your actual backend URL
+const API_URL = 'https://vooshfoodstodo-1.onrender.com'; // Change to your actual backend URL
 
 // Function to handle user signup
 // Function to handle user signup

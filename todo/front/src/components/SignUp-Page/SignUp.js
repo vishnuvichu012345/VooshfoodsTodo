@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import './SignupForm.css'; // Import the CSS file
+import './SignupForm.css';
 import { registerUser } from '../../services/authService';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 export default function SignupForm() {
   const [firstName, setFirstName] = useState('');
@@ -8,27 +11,35 @@ export default function SignupForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setSuccess('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
     try {
       const fullName = `${firstName} ${lastName}`;
-      const response = await registerUser(fullName, email, password); // Send data to backend
-      setSuccess('Registration successful!'); // Handle success response
-      console.log('Response from backend:', response);
+      const response = await registerUser(fullName, email, password);
+      setSuccess('Registration successful!');
+      toast.success('Registration successful!');
+
+      // Redirect to login page after successful registration
+      setTimeout(() => {
+        navigate('/'); // Redirect to login page
+      }, 2000); // Wait for 2 seconds before redirecting
     } catch (err) {
-      setError(err.msg || 'Something went wrong'); // Display error message
-      console.error('Error from backend:', err);
+      if (err.errors) {
+        err.errors.forEach((error) => toast.error(error.msg));
+      } else {
+        toast.error(err.msg || 'Something went wrong');
+      }
     }
   };
 
@@ -44,8 +55,9 @@ export default function SignupForm() {
       <div className="container">
         <form className="form" onSubmit={handleSubmit}>
           <h2 className="title">Signup</h2>
-          {error && <p className="error">{error}</p>}
+
           {success && <p className="success">{success}</p>}
+
           <input
             type="text"
             placeholder="First Name"
@@ -90,13 +102,15 @@ export default function SignupForm() {
             Signup
           </button>
           <p className="text">
-            Already have an account? <a href="#" className="link">Login</a>
+            Already have an account? <a href="/" className="link">Login</a>
           </p>
           <button type="button" className="google-button">
             Signup with Google
           </button>
         </form>
       </div>
+
+      <ToastContainer />
     </>
   );
 }

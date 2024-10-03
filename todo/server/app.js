@@ -4,9 +4,12 @@ const { connectDB } = require('./db');
 const { User } = require('./models');
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
+const cors = require('cors');
 require('dotenv').config();
 
+
 const app = express();
+app.use(cors());
 
 // Connect to MySQL
 connectDB();

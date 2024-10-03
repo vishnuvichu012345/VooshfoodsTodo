@@ -15,7 +15,6 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// Create Task
 router.post('/', [auth, body('title').notEmpty()], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -28,9 +27,11 @@ router.post('/', [auth, body('title').notEmpty()], async (req, res) => {
     const newTask = await Task.create({ title, description, column, dueDate, userId: req.user });
     res.json(newTask);
   } catch (err) {
+    console.error('Error creating task:', err); // Log the error
     res.status(500).send('Server error');
   }
 });
+
 
 // Update Task
 router.put('/:id', [auth, body('title').notEmpty()], async (req, res) => {

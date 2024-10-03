@@ -4,6 +4,7 @@ import axios from 'axios';
 const API_URL = 'http://localhost:5000/api'; // Change to your actual backend URL
 
 // Function to handle user signup
+// Function to handle user signup
 export const registerUser = async (name, email, password) => {
   try {
     const response = await axios.post(`${API_URL}/auth/register`, {
@@ -11,16 +12,21 @@ export const registerUser = async (name, email, password) => {
       email,
       password,
     });
-    return response.data; // The token or any response you send from the backend
+    return response.data; // Return backend response
   } catch (error) {
-    throw error.response.data; // Handle errors (like validation issues)
+    if (error.response && error.response.data) {
+      throw error.response.data; // Pass specific error from backend
+    } else {
+      throw { msg: 'Server error, please try again later' }; // Default fallback error
+    }
   }
 };
+
 
 // Function to handle user login (You can add this later)
 export const loginUser = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, {
+    const response = await axios.post(`${API_URL}/auth/login`, {
       email,
       password,
     });

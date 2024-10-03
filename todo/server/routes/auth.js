@@ -28,16 +28,15 @@ router.post('/register', [
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ name, email, password: hashedPassword });
+    await User.create({ name, email, password: hashedPassword });
 
-    const payload = { userId: newUser.id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    res.json({ token });
+    // Send success message instead of token
+    res.status(201).json({ msg: 'User registered successfully' });
   } catch (err) {
     res.status(500).send('Server error');
   }
 });
+
 
 // User Login
 router.post('/login', [
